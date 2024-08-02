@@ -1,6 +1,6 @@
 import { Client } from '@googlemaps/google-maps-services-js';
 
-const apiKey = 'AIzaSyCszTXCRzVkOftnnG4WJGJoKihWEK56_k4'; // Sostituisci con la tua chiave API di Google
+const apiKey = process.env.MAPS_API_KEY || ""; // Sostituisci con la tua chiave API di Google
 
 export async function getTravelTime(
   originLat: number,
