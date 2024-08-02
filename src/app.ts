@@ -37,33 +37,7 @@ app.get("/destinations", async (req: Request, res: Response) => {
     }
     if(!Number.isNaN(lat) && !Number.isNaN(long) ){
       try {
-        const plugsRaw:plugRaw[]= await getCloseEVPlugs(lat,long,distance_meters);
-        let plugs:plug[]=[];
-        const promises = plugsRaw.map( async (plugRaw) => {
-          plugs.push(
-            {uuid:plugRaw.scode,
-              coords:{
-                lat:plugRaw.pcoordinate.y,
-                lon:plugRaw.pcoordinate.x
-              },
-              roaDistance: await getTravelTime(lat,long,plugRaw.pcoordinate.y,plugRaw.pcoordinate.x),
-              outletType: plugRaw.smetadata.outlets[0].outletTypeCode,
-              powerWatt: plugRaw.smetadata.outlets[0].maxPower,
-              rating: await getRating(plugRaw.pcoordinate.y,plugRaw.pcoordinate.x),
-              cost: getRandomValue(0.65, 0.90),
-              street:plugRaw.pmetadata.address,
-              best_cost:false,
-              best_rating:false,
-              best_time:false}
-          );
-          //se rating è -1 vuol dire che non è riuscito a fetcharlo
-        });
-        await Promise.all(promises);
-        addCORS(res);
-        assignBestCost(plugs);
-        assignBestRating(plugs);
-        assignBestTime(plugs);
-        plugs = plugs.slice(0, 30);
+        const plugs:plug[] = await processPlugs(lat,long,distance_meters);
         res.json(plugs);
         return;
       } catch (error) {
@@ -79,34 +53,8 @@ app.get("/destinations", async (req: Request, res: Response) => {
 
 app.get("/getAll", async (req: Request, res: Response) => {
   try {
-    const plugsRaw:plugRaw[]= await getAllEVPlugs();
-    let plugs:plug[]=[];
-    const promises = plugsRaw.map( async (plugRaw) => {
-      plugs.push(
-        {uuid:plugRaw.scode,
-          coords:{
-            lat:plugRaw.pcoordinate.y,
-            lon:plugRaw.pcoordinate.x
-          },
-          roaDistance: null,
-          outletType: plugRaw.smetadata.outlets[0].outletTypeCode,
-          powerWatt: plugRaw.smetadata.outlets[0].maxPower,
-          rating: await getRating(plugRaw.pcoordinate.y,plugRaw.pcoordinate.x),
-          cost: getRandomValue(0.65, 0.90),
-          street:plugRaw.pmetadata.address,
-          best_cost:false,
-          best_rating:false,
-          best_time:false
-        }
-      );
-      //se rating è -1 vuol dire che non è riuscito a fetcharlo
-    });
-    await Promise.all(promises);
+    const plugs:plug[] = await processPlugs(null,null,null);
     addCORS(res);
-    assignBestCost(plugs);
-    assignBestRating(plugs);
-    assignBestTime(plugs);
-    plugs = plugs.slice(0, 30);
     res.json(plugs);
     return;
   } catch (error) {
@@ -120,5 +68,51 @@ app.listen(port, '0.0.0.0');
 
 function getRandomValue(min: number, max: number): number {
   return Math.random() * (max - min) + min;
+}
+
+async function processPlugs(lat:number|null,lon:number|null,distance_meters:number|null):Promise<plug[]>{
+  try {
+    let time:number | null = null;
+    let plugsRaw:plugRaw[]= [];
+    if(lat && lon && distance_meters){
+      plugsRaw= await getCloseEVPlugs(lat,lon,distance_meters);
+    }
+    else{
+      plugsRaw= await getAllEVPlugs();
+    }
+    let plugs:plug[]=[];
+    const promises = plugsRaw.map( async (plugRaw) => {
+      if(lat && lon && distance_meters){
+        time = await getTravelTime(lat,lon,plugRaw.pcoordinate.y,plugRaw.pcoordinate.x);
+      }
+      plugs.push(
+        {uuid:plugRaw.scode,
+          coords:{
+            lat:plugRaw.pcoordinate.y,
+            lon:plugRaw.pcoordinate.x
+          },
+          roaDistance: time,
+          outletType: plugRaw.smetadata.outlets[0].outletTypeCode,
+          powerWatt: plugRaw.smetadata.outlets[0].maxPower,
+          rating: await getRating(plugRaw.pcoordinate.y,plugRaw.pcoordinate.x),
+          cost: getRandomValue(0.65, 0.90),
+          street:plugRaw.pmetadata.address,
+          best_cost:false,
+          best_rating:false,
+          best_time:false
+        }
+      );
+      //se rating è -1 vuol dire che non è riuscito a fetcharlo
+    });
+    await Promise.all(promises);
+    assignBestCost(plugs);
+    assignBestRating(plugs);
+    assignBestTime(plugs);
+    plugs = plugs.slice(0, 30);
+    return plugs;
+  }
+  catch(error){
+    throw new Error("Couldn't process plugs data");
+  }
 }
 
