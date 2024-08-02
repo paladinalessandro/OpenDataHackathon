@@ -14,6 +14,10 @@ export function assignBestTime(cards:plug[]){
         }
     }
     cards[index].best_time = true;
+    let temp:plug;
+    temp = cards[index];
+    cards[index]=cards[0];
+    cards[0]=temp;
 }
 
 export function assignBestCost(cards:plug[]){
@@ -26,6 +30,10 @@ export function assignBestCost(cards:plug[]){
         }
     }
     cards[index].best_cost = true;
+    let temp:plug;
+    temp = cards[index];
+    cards[index]=cards[1];
+    cards[1]=temp;
 }
 
 export function assignBestRating(cards:plug[]){
@@ -42,4 +50,54 @@ export function assignBestRating(cards:plug[]){
         }
     }
     cards[index].best_rating = true;
+    let temp:plug;
+    temp = cards[index];
+    cards[index]=cards[2];
+    cards[2]=temp;
 }
+
+
+//USED TO SORT WHILE CONSIDERING FACTORS
+/*
+export function sortPlugs(plugs: plug[]): plug[] {
+    // Separare i plug con best_time, best_cost, best_rating
+    const bestTimePlug = plugs.find(p => p.best_time);
+    const bestCostPlug = plugs.find(p => p.best_cost);
+    const bestRatingPlug = plugs.find(p => p.best_rating);
+
+    // Filtrare i plug rimanenti
+    const remainingPlugs = plugs.filter(p => !p.best_time && !p.best_cost && !p.best_rating);
+
+    // Ordinare i plug rimanenti in base al punteggio calcolato
+    remainingPlugs.sort((a, b) => calculateScore(b) - calculateScore(a));
+
+    // Creare l'array finale con l'ordine richiesto
+    const sortedPlugs = [];
+    if (bestTimePlug) sortedPlugs.push(bestTimePlug);
+    if (bestCostPlug) sortedPlugs.push(bestCostPlug);
+    if (bestRatingPlug) sortedPlugs.push(bestRatingPlug);
+    sortedPlugs.push(...remainingPlugs);
+    console.log(sortedPlugs);
+
+    return sortedPlugs;
+}
+
+function calculateScore(plug: plug): number {
+    // Pesi
+    const roaDistanceWeight = 0.5;
+    const costPerWattWeight = 0.3;
+    const ratingWeight = 0.2;
+
+    // Normalizzazione dei valori
+    const roaDistanceScore = plug.roaDistance !== null ? 1 / (1 + plug.roaDistance) : 0;
+    const costPerWattScore = 1 / (1 + plug.cost / plug.powerWatt);
+    const ratingScore = plug.rating !== null ? plug.rating / 5 : 0;
+
+    // Calcolo del punteggio finale
+    const finalScore = (roaDistanceScore * roaDistanceWeight) +
+                       (costPerWattScore * costPerWattWeight) +
+                       (ratingScore * ratingWeight);
+
+    return finalScore;
+}
+    */

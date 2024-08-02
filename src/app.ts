@@ -63,6 +63,7 @@ app.get("/destinations", async (req: Request, res: Response) => {
         assignBestCost(plugs);
         assignBestRating(plugs);
         assignBestTime(plugs);
+        plugs = plugs.slice(0, 30);
         res.json(plugs);
         return;
       } catch (error) {
@@ -102,6 +103,10 @@ app.get("/getAll", async (req: Request, res: Response) => {
     });
     await Promise.all(promises);
     addCORS(res);
+    assignBestCost(plugs);
+    assignBestRating(plugs);
+    assignBestTime(plugs);
+    plugs = plugs.slice(0, 30);
     res.json(plugs);
     return;
   } catch (error) {
