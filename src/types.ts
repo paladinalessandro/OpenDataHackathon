@@ -8,7 +8,7 @@ export interface plug{
     roaDistance: number,
     powerWatt:number,
     outletType:string,
-    reviews: number,
+    rating: number,
     cost: number
 }
 

@@ -1,6 +1,6 @@
 import { Client } from '@googlemaps/google-maps-services-js';
 
-const apiKey = '<YOUR_KEY>'; // Sostituisci con la tua chiave API di Google
+const apiKey = process.env.MAPS_API_KEY || ""; // Sostituisci con la tua chiave API di Google
 
 let overallRating: number | null = null; // Variabile per memorizzare il rating complessivo
 
@@ -19,13 +19,10 @@ export async function getPlaceDetails(placeId: string): Promise<void> {
 
     if (response.data.result) {
       overallRating = response.data.result.rating || null; // Memorizza il rating complessivo nella variabile
-      console.log(`Overall rating for ${placeId}: ${overallRating}`);
     } else {
-      console.log(`No details found for the place ID: ${placeId}`);
       overallRating = null;
     }
   } catch (error) {
-    console.error(`Error fetching place details for ${placeId}:`, error);
     overallRating = null;
   }
 }

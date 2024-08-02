@@ -8,7 +8,7 @@ const doc = {
     },
     servers: [
         {
-            url: 'http://localhost:8080',
+            url: 'http://localhost:3052',
             description: ''
         },
     ],

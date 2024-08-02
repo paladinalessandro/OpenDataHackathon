@@ -5,13 +5,14 @@ import { getAllEVPlugs, getCloseEVPlugs } from "./opendata";
 import { plug, plugRaw } from "./types";
 import swaggerUi from "swagger-ui-express";
 import swaggerOutput from "./swagger_output.json";
+import { getRating } from "./maps_api/reviews";
 
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT || 3000;
+const port = 3052;
 
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerOutput));
+//app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerOutput));
 
 app.get("/destinations", async (req: Request, res: Response) => {
   const query = req.query;
@@ -30,15 +31,16 @@ app.get("/destinations", async (req: Request, res: Response) => {
       try {
         const plugsRaw:plugRaw[]= await getCloseEVPlugs(lat,long,distance_meters);
         let plugs:plug[]=[];
-        plugsRaw.forEach(plugRaw => {
+        plugsRaw.forEach(async (plugRaw) => {
           plugs.push(
             {uuid:plugRaw.scode,
               roaDistance: 1,
               outletType: plugRaw.smetadata.outlets[0].outletTypeCode,
               powerWatt: plugRaw.smetadata.outlets[0].maxPower,
-              reviews: 1,
-              cost: 1}
+              rating: await getRating(plugRaw.pcoordinate.y,plugRaw.pcoordinate.x),
+              cost: getRandomValue(0.65, 0.90)}
           );
+          //se rating è -1 vuol dire che non è riuscito a fetcharlo
         });
         res.json(plugs);
         return;
@@ -57,15 +59,16 @@ app.get("/getAll", async (req: Request, res: Response) => {
   try {
     const plugsRaw:plugRaw[]= await getAllEVPlugs();
     let plugs:plug[]=[];
-    plugsRaw.forEach(plugRaw => {
+    plugsRaw.forEach(async (plugRaw) => {
       plugs.push(
         {uuid:plugRaw.scode,
           roaDistance: 1,
           outletType: plugRaw.smetadata.outlets[0].outletTypeCode,
           powerWatt: plugRaw.smetadata.outlets[0].maxPower,
-          reviews: 1,
-          cost: 1}
+          rating: await getRating(plugRaw.pcoordinate.y,plugRaw.pcoordinate.x),
+          cost: getRandomValue(0.65, 0.90)}
       );
+      //se rating è -1 vuol dire che non è riuscito a fetcharlo
     });
     res.json(plugs);
     return;
@@ -74,7 +77,11 @@ app.get("/getAll", async (req: Request, res: Response) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
-});
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerOutput));
+
+app.listen(port, '0.0.0.0');
+
+function getRandomValue(min: number, max: number): number {
+  return Math.random() * (max - min) + min;
+}
 
