@@ -7,6 +7,7 @@ export async function getCloseEVPlugs(latitude:number,longitude:number,distance_
     try {
         //4326 is the code for the formatting of the coordinates
         //usage: longitude - latitude
+        console.log("https://mobility.api.opendatahub.com/v2/flat/EChargingPlug/?where=sactive.eq.true&limit=-1&where=scoordinate.dlt.("+distance_meters+","+longitude+","+latitude+",4326)");
         const response = await fetch("https://mobility.api.opendatahub.com/v2/flat/EChargingPlug/?where=sactive.eq.true&limit=-1&where=scoordinate.dlt.("+distance_meters+","+longitude+","+latitude+",4326)");
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);

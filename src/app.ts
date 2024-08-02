@@ -11,10 +11,16 @@ dotenv.config();
 
 const app: Express = express();
 const port = 3052;
+function addCORS(res: Response) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "*");
+  res.header("Access-Control-Allow-Headers", "*");
+}
 
 //app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerOutput));
 
 app.get("/destinations", async (req: Request, res: Response) => {
+
   const query = req.query;
   //INPUT DESTINATION + AUTONOMY LEFT
   if(query.latitude && query.longitude && query.distance_meters){
@@ -31,7 +37,7 @@ app.get("/destinations", async (req: Request, res: Response) => {
       try {
         const plugsRaw:plugRaw[]= await getCloseEVPlugs(lat,long,distance_meters);
         let plugs:plug[]=[];
-        plugsRaw.forEach(async (plugRaw) => {
+        const promises = plugsRaw.map( async (plugRaw) => {
           plugs.push(
             {uuid:plugRaw.scode,
               roaDistance: 1,
@@ -42,6 +48,8 @@ app.get("/destinations", async (req: Request, res: Response) => {
           );
           //se rating è -1 vuol dire che non è riuscito a fetcharlo
         });
+        await Promise.all(promises);
+        addCORS(res);
         res.json(plugs);
         return;
       } catch (error) {
@@ -59,7 +67,7 @@ app.get("/getAll", async (req: Request, res: Response) => {
   try {
     const plugsRaw:plugRaw[]= await getAllEVPlugs();
     let plugs:plug[]=[];
-    plugsRaw.forEach(async (plugRaw) => {
+    const promises = plugsRaw.map( async (plugRaw) => {
       plugs.push(
         {uuid:plugRaw.scode,
           roaDistance: 1,
@@ -70,6 +78,8 @@ app.get("/getAll", async (req: Request, res: Response) => {
       );
       //se rating è -1 vuol dire che non è riuscito a fetcharlo
     });
+    await Promise.all(promises);
+    addCORS(res);
     res.json(plugs);
     return;
   } catch (error) {
