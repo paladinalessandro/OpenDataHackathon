@@ -23,14 +23,11 @@ export async function getTravelTime(
     if (response.data.routes.length > 0 && response.data.routes[0].legs.length > 0) {
       const duration = response.data.routes[0].legs[0].duration.value; // Durata in secondi
       const durationInMinutes = Math.ceil(duration / 60); // Converti in minuti
-      console.log(`Travel time from (${originLat}, ${originLng}) to (${destLat}, ${destLng}): ${durationInMinutes} minutes`);
       return durationInMinutes;
     } else {
-      console.log('No route found between the given locations.');
       return null;
     }
   } catch (error) {
-    console.error('Error fetching travel time:', error);
     return null;
   }
 }

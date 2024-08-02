@@ -6,6 +6,8 @@ import { plug, plugRaw } from "./types";
 import swaggerUi from "swagger-ui-express";
 import swaggerOutput from "./swagger_output.json";
 import { getRating } from "./maps_api/reviews";
+import { getTravelTime } from "./maps_api/directions";
+import { assignBestCost, assignBestRating, assignBestTime } from "./classify";
 
 dotenv.config();
 
@@ -40,16 +42,27 @@ app.get("/destinations", async (req: Request, res: Response) => {
         const promises = plugsRaw.map( async (plugRaw) => {
           plugs.push(
             {uuid:plugRaw.scode,
-              roaDistance: 1,
+              coords:{
+                lat:plugRaw.pcoordinate.y,
+                lon:plugRaw.pcoordinate.x
+              },
+              roaDistance: await getTravelTime(lat,long,plugRaw.pcoordinate.y,plugRaw.pcoordinate.x),
               outletType: plugRaw.smetadata.outlets[0].outletTypeCode,
               powerWatt: plugRaw.smetadata.outlets[0].maxPower,
               rating: await getRating(plugRaw.pcoordinate.y,plugRaw.pcoordinate.x),
-              cost: getRandomValue(0.65, 0.90)}
+              cost: getRandomValue(0.65, 0.90),
+              street:plugRaw.pmetadata.address,
+              best_cost:false,
+              best_rating:false,
+              best_time:false}
           );
           //se rating è -1 vuol dire che non è riuscito a fetcharlo
         });
         await Promise.all(promises);
         addCORS(res);
+        assignBestCost(plugs);
+        assignBestRating(plugs);
+        assignBestTime(plugs);
         res.json(plugs);
         return;
       } catch (error) {
@@ -70,11 +83,20 @@ app.get("/getAll", async (req: Request, res: Response) => {
     const promises = plugsRaw.map( async (plugRaw) => {
       plugs.push(
         {uuid:plugRaw.scode,
-          roaDistance: 1,
+          coords:{
+            lat:plugRaw.pcoordinate.y,
+            lon:plugRaw.pcoordinate.x
+          },
+          roaDistance: null,
           outletType: plugRaw.smetadata.outlets[0].outletTypeCode,
           powerWatt: plugRaw.smetadata.outlets[0].maxPower,
           rating: await getRating(plugRaw.pcoordinate.y,plugRaw.pcoordinate.x),
-          cost: getRandomValue(0.65, 0.90)}
+          cost: getRandomValue(0.65, 0.90),
+          street:plugRaw.pmetadata.address,
+          best_cost:false,
+          best_rating:false,
+          best_time:false
+        }
       );
       //se rating è -1 vuol dire che non è riuscito a fetcharlo
     });

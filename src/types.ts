@@ -4,12 +4,20 @@ export interface coordinates{
 }
 
 export interface plug{
+    coords:{
+      lat: number;
+	    lon: number;
+    }
     uuid:string,
-    roaDistance: number,
+    roaDistance: number | null,
     powerWatt:number,
     outletType:string,
-    rating: number | undefined,
-    cost: number
+    rating: number | null,
+    cost: number,
+    street:string,
+    best_cost:boolean,
+    best_time:boolean,
+    best_rating:boolean 
 }
 
 

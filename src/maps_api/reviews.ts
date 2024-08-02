@@ -1,7 +1,7 @@
 import { getPlaceId } from './reverseGeo';
 import { getPlaceDetails, overallRating } from './placeDetails';
 
-export async function getRating(lat:number,lng:number):Promise<number>{
+export async function getRating(lat:number,lng:number):Promise<number|null>{
   const placeId = await getPlaceId(lat, lng);
 
   if (placeId) {
@@ -11,5 +11,5 @@ export async function getRating(lat:number,lng:number):Promise<number>{
       return (overallRating.toFixed(1) as unknown) as number; // Stampa il rating con una cifra decimale
     }
   }
-  return -1;
+  return null
 }
