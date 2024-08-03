@@ -69,7 +69,7 @@ export async function processPlugs(lat:number|null,lon:number|null,range:number|
         }
         plugs.sort((a, b) => getScore(a)  - getScore(b));
         if(plugs[0]){
-          plugs[0].best_overall;
+          plugs[0].best_overall =  true;
         }
         assignBestCost(plugs);
         assignBestRating(plugs);
