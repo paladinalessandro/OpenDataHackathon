@@ -4,7 +4,6 @@ export function assignBestTime(cards:plug[]){
     let max:number = Infinity;
     let index:number = 0;
     let time:number|null;
-    console.log(cards);
     for (let i = 0; i < cards.length; i++) {
         if(cards[i] && cards[i].roaDistance){
             time = cards[i].roaDistance;
