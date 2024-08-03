@@ -1,8 +1,8 @@
 import { Client } from '@googlemaps/google-maps-services-js';
 
-const apiKey = process.env.MAPS_API_KEY || ""; // Sostituisci con la tua chiave API di Google
+const apiKey = process.env.MAPS_API_KEY || ""; // hide key
 
-let overallRating: number | null = null; // Variabile per memorizzare il rating complessivo
+let overallRating: number | null = null; 
 
 export async function getPlaceDetails(placeId: string): Promise<void> {
   const client = new Client({});
@@ -12,13 +12,13 @@ export async function getPlaceDetails(placeId: string): Promise<void> {
       params: {
         place_id: placeId,
         key: apiKey,
-        fields: ['rating'], // Ottieni solo il rating complessivo
+        fields: ['rating'],
       },
-      timeout: 1000, // tempo di timeout di 1 secondo
+      timeout: 1000, 
     });
 
     if (response.data.result) {
-      overallRating = response.data.result.rating || null; // Memorizza il rating complessivo nella variabile
+      overallRating = response.data.result.rating || null; 
     } else {
       overallRating = null;
     }
@@ -27,4 +27,4 @@ export async function getPlaceDetails(placeId: string): Promise<void> {
   }
 }
 
-export { overallRating }; // Esporta la variabile del rating complessivo
+export { overallRating }; // Esporto rating complessivo

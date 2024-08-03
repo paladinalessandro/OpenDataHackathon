@@ -74,9 +74,13 @@ export async function processPlugs(lat:number|null,lon:number|null,time_for_char
 }
 
 function getScore(plug:plug){
-if(plug.roaDistance){
-    return plug.roaDistance;
-}
-return Infinity;
+  
+  const roadDistanceWeight = 0.4;
+  const costWeight = 0.6;
+
+  const roadDistance = plug.roaDistance ?? Infinity;
+  const cost = plug.cost ?? Infinity;
+
+  return (roadDistanceWeight * roadDistance) + (costWeight * cost);
 }
   
