@@ -15,9 +15,10 @@ export interface plug{
     rating: number | null,
     cost: number,
     count:number,
+    street_view_image:string|null,
     street:string,
     best_cost:boolean,
-    best_time:boolean,
+    best_time_recharging:boolean,
     best_rating:boolean 
 }
 

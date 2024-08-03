@@ -31,7 +31,21 @@
             }
           },
           {
-            "name": "distance_meters",
+            "name": "time_for_charging_hours",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "battery_capacity",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "outlet_types",
             "in": "query",
             "schema": {
               "type": "string"

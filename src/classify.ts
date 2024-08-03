@@ -1,67 +1,75 @@
 import { plug } from "./types";
 
 export function assignBestTime(cards:plug[]){
-    let max:number = Infinity;
-    let index:number = 0;
-    let time:number|null;
-    for (let i = 0; i < cards.length; i++) {
-        if(cards[i] && cards[i].roaDistance){
-            time = cards[i].roaDistance;
-            if(time){
-                if(max>time){
-                    max = time;
-                    index=i;
+    if(!cards || cards.length == 0){
+        return;
+    }
+    else{
+        let max:number = -Infinity;
+        let index:number = 0;
+        let time:number|null;
+        for (let i = 0; i < cards.length; i++) {
+            if(cards[i] && cards[i].powerWatt){
+                time = cards[i].powerWatt;
+                if(time){
+                    if(max<time){
+                        max = time;
+                        index=i;
+                    }
                 }
             }
         }
+        cards[index].best_time_recharging = true;
+        cards.unshift(cards[index]);
+        cards.splice(index+1,1);
     }
-    cards[index].best_time = true;
-    let temp:plug;
-    temp = cards[index];
-    cards[index]=cards[0];
-    cards[0]=temp;
 }
 
 export function assignBestCost(cards:plug[]){
-    let max:number = Infinity;
-    let index:number = 0;
-    for (let i = 0; i < cards.length; i++) {
-        if(cards[i] && cards[i].cost){
-            if(max>cards[i].cost){
-                max = cards[i].cost
-                index=i;
-            }
-        }
+    if(!cards || cards.length == 0){
+        return;
     }
-    cards[index].best_cost = true;
-    let temp:plug;
-    temp = cards[index];
-    cards[index]=cards[1];
-    cards[1]=temp;
-}
-
-export function assignBestRating(cards:plug[]){
-    let max:number = Infinity;
-    let index:number = 0;
-    let rating:number|null;
-    for (let i = 0; i < cards.length; i++) {
-        if(cards[i] && cards[i].rating){
-            rating = cards[i].rating;
-            if(rating){
-                if(max<rating){
-                    max = rating
+    else{
+        let max:number = Infinity;
+        let index:number = 0;
+        for (let i = 0; i < cards.length; i++) {
+            if(cards[i] && cards[i].cost){
+                if(max>cards[i].cost){
+                    max = cards[i].cost
                     index=i;
                 }
             }
         }
+        cards[index].best_cost = true;
+        cards.unshift(cards[index]);
+        cards.splice(index+1,1);
     }
-    cards[index].best_rating = true;
-    let temp:plug;
-    temp = cards[index];
-    cards[index]=cards[2];
-    cards[2]=temp;
 }
 
+export function assignBestRating(cards:plug[]){
+    if(!cards || cards.length == 0){
+        return;
+    }
+    else{
+        let max:number = -Infinity;
+        let index:number = 0;
+        let rating:number|null;
+        for (let i = 0; i < cards.length; i++) {
+            if(cards[i] && cards[i].rating){
+                rating = cards[i].rating;
+                if(rating){
+                    if(max<rating){
+                        max = rating
+                        index=i;
+                    }
+                }
+            }
+        }
+        cards[index].best_rating = true;
+        cards.unshift(cards[index]);
+        cards.splice(index+1,1);
+    }
+}
 
 //TODO
 export function collapsePlugs(plugs: plug[]): plug[] {
