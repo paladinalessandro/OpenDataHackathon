@@ -1,6 +1,6 @@
 # EV Charging Station Finder
 
-![EV Charging Station Finder](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExYzU1cXUyZTh2dWkzbXo3NjVkNTF1MDljaHJneGI3OXd5MTM1M2hlcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/H7rpSYHRyYgamxQNqw/giphy.gif)
+![EV Charging Station Finder](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGh4dDhiN3dycG0ycmd6eWdjZW10c2p4dTBlZWhrOGxhbjdmcGhoOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7WtudzD9XpxXG/giphy.gif)
 
 ## Overview
 EV Charging Station Finder is a web application designed to help electric vehicle owners find the best charging station near their current location. Utilizing real-time data and an intuitive map interface, this app ensures you never run out of charge when you need it most.
