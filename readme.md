@@ -1,15 +1,14 @@
 # EV Charging Station Finder
 
-![EV Charging Station Finder](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmJ6dXV1Z2Z0a2Q2NGRxNGpqNXhkamR4dWZ0enRyenppaWZxNmo1cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/TF5s5UyioGUIcLK0vo/giphy.gif)
+![EV Charging Station Finder](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExYzU1cXUyZTh2dWkzbXo3NjVkNTF1MDljaHJneGI3OXd5MTM1M2hlcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/H7rpSYHRyYgamxQNqw/giphy.gif)
 
 ## Overview
 EV Charging Station Finder is a web application designed to help electric vehicle owners find the best charging station near their current location. Utilizing real-time data and an intuitive map interface, this app ensures you never run out of charge when you need it most.
 
 ## Features
-- **Real-time Charging Station Data:** Get up-to-date information on nearby charging stations.
-- **Interactive Map:** Easily visualize and navigate to the nearest charging stations.
-- **User-Friendly Interface:** Clean and simple design for a seamless user experience.
-- **Customizable Settings:** Set your preferences for a more personalized experience.
+- **Real-time Charging Station Data:** Get all available open data ev charging station currently active at url/getAll
+- **Customizable Filters:** Get filtered open data ev charging station currently active at url/destinations?parameters
+- **Well documented:** Get all available exposed APIs and examples at url/
 
 ## Installation
 
@@ -41,10 +40,14 @@ EV Charging Station Finder is a web application designed to help electric vehicl
     ```
     By default, the server runs on `PORT 3000` and `HOST 127.0.0.1`. You can change these by setting the `PORT` and `HOST` environment variables in your `.env` file.
 
-2. **Build the project:**
+2. **Build the project and launch on your enviroment:**
     ```sh
     npm run build
     ```
+3. **When launched, navigate to :**
+    ```Open your browser and go to http://HOST/ and take a look at the docs
+    ```
+
 
 ## Scripts
 
