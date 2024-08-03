@@ -1,6 +1,6 @@
 import { Client } from '@googlemaps/google-maps-services-js';
 
-const apiKey = process.env.MAPS_API_KEY || ""; // Sostituisci con la tua chiave API di Google
+const apiKey = process.env.MAPS_API_KEY || ""; // hide key
 
 export async function getPlaceId(lat: number, lng: number): Promise<string | null> {
   const client = new Client({});
@@ -11,7 +11,7 @@ export async function getPlaceId(lat: number, lng: number): Promise<string | nul
         latlng: { lat, lng },
         key: apiKey,
       },
-      timeout: 1000, // tempo di timeout di 1 secondo
+      timeout: 1000,
     });
 
     if (response.data.results.length > 0) {

@@ -1,6 +1,6 @@
 import { Client } from '@googlemaps/google-maps-services-js';
 
-const apiKey = process.env.MAPS_API_KEY || ""; // Insert your api key here
+const apiKey = process.env.MAPS_API_KEY || ""; // hide key
 
 export async function getTravelTime(
   originLat: number,
@@ -17,7 +17,7 @@ export async function getTravelTime(
         destination: { lat: destLat, lng: destLng },
         key: apiKey,
       },
-      timeout: 1000, // Timeout of 1s
+      timeout: 1000, 
     });
 
     if (response.data.routes.length > 0 && response.data.routes[0].legs.length > 0) {
