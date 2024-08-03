@@ -21,7 +21,8 @@ export interface plug{
     street:string,
     best_cost:boolean,
     best_time_recharging:boolean,
-    best_rating:boolean 
+    best_rating:boolean,
+    best_overall:boolean
 }
 
 

@@ -48,7 +48,8 @@ export async function processPlugs(lat:number|null,lon:number|null,range:number|
             best_rating:false,
             best_time_recharging:false,
             count:0,
-            street_view_image: image
+            street_view_image: image,
+            best_overall:false
           }
         );
       });
@@ -67,6 +68,9 @@ export async function processPlugs(lat:number|null,lon:number|null,range:number|
           plugs = filterForPlugType(outletTypes,plugs);
         }
         plugs.sort((a, b) => getScore(a)  - getScore(b));
+        if(plugs[0]){
+          plugs[0].best_overall;
+        }
         assignBestCost(plugs);
         assignBestRating(plugs);
         assignBestTime(plugs);
