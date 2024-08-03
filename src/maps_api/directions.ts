@@ -1,6 +1,6 @@
 import { Client } from '@googlemaps/google-maps-services-js';
 
-const apiKey = process.env.MAPS_API_KEY || ""; // Sostituisci con la tua chiave API di Google
+const apiKey = process.env.MAPS_API_KEY || ""; // Insert your api key here
 
 export async function getTravelTime(
   originLat: number,
@@ -17,12 +17,12 @@ export async function getTravelTime(
         destination: { lat: destLat, lng: destLng },
         key: apiKey,
       },
-      timeout: 1000, // tempo di timeout di 1 secondo
+      timeout: 1000, // Timeout of 1s
     });
 
     if (response.data.routes.length > 0 && response.data.routes[0].legs.length > 0) {
-      const duration = response.data.routes[0].legs[0].duration.value; // Durata in secondi
-      const durationInMinutes = Math.ceil(duration / 60); // Converti in minuti
+      const duration = response.data.routes[0].legs[0].duration.value; // Time in secs
+      const durationInMinutes = Math.ceil(duration / 60); // time in mins
       return durationInMinutes;
     } else {
       return null;

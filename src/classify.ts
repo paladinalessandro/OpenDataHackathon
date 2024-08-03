@@ -1,5 +1,7 @@
 import { plug } from "./types";
 
+
+//This function places the element with the highest wattage first
 export function assignBestTime(cards:plug[]){
     if(!cards || cards.length == 0){
         return;
@@ -25,6 +27,7 @@ export function assignBestTime(cards:plug[]){
     }
 }
 
+//This function places the element with the lowest cost first
 export function assignBestCost(cards:plug[]){
     if(!cards || cards.length == 0){
         return;
@@ -46,6 +49,7 @@ export function assignBestCost(cards:plug[]){
     }
 }
 
+//This function places the element with the highest rating first
 export function assignBestRating(cards:plug[]){
     if(!cards || cards.length == 0){
         return;
