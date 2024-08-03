@@ -37,11 +37,12 @@ export async function processPlugs(lat:number|null,lon:number|null,range:number|
               lon:plugRaw.pcoordinate.x
             },
             recharge_time_estimate: null,
+            cost_estimate: null,
             roaDistance: time,
             outletType: plugRaw.smetadata.outlets[0].outletTypeCode,
             powerWatt: plugRaw.smetadata.outlets[0].maxPower,
             rating: await getRating(plugRaw.pcoordinate.y,plugRaw.pcoordinate.x),
-            cost: getRandomValue(0.022, 0.037)*plugRaw.smetadata.outlets[0].maxPower,
+            cost: getRandomValue(0.025, 0.037)*plugRaw.smetadata.outlets[0].maxPower,
             street:plugRaw.pmetadata.address,
             best_cost:false,
             best_rating:false,
@@ -59,6 +60,7 @@ export async function processPlugs(lat:number|null,lon:number|null,range:number|
           plugs = plugs.filter(value => ((battery_capacity*percentage_to_charge*0.01) / value.powerWatt) < time_for_charging_hours);
           plugs.map((plug)=>{
             plug.recharge_time_estimate = (battery_capacity*percentage_to_charge*0.01) / plug.powerWatt;
+            plug.cost_estimate = plug.recharge_time_estimate *  plug.cost * plug.powerWatt;
           })
         }
         if(outletTypes){

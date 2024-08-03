@@ -12,6 +12,7 @@ export interface plug{
     roaDistance: number | null,
     powerWatt:number,
     outletType:string,
+    cost_estimate:number|null,
     rating: number | null,
     cost: number,
     count:number,
