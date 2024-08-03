@@ -7,7 +7,7 @@ import swaggerUi from "swagger-ui-express";
 import swaggerOutput from "./swagger_output.json";
 import { getRating } from "./maps_api/reviews";
 import { getTravelTime } from "./maps_api/directions";
-import { assignBestCost, assignBestRating, assignBestTime } from "./classify";
+import { assignBestCost, assignBestRating, assignBestTime, collapsePlugs } from "./classify";
 
 dotenv.config();
 
@@ -22,7 +22,6 @@ function addCORS(res: Response) {
 //app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerOutput));
 
 app.get("/destinations", async (req: Request, res: Response) => {
-
   const query = req.query;
   //INPUT DESTINATION + AUTONOMY LEFT
   if(query.latitude && query.longitude && query.distance_meters){
@@ -38,9 +37,11 @@ app.get("/destinations", async (req: Request, res: Response) => {
     if(!Number.isNaN(lat) && !Number.isNaN(long) ){
       try {
         const plugs:plug[] = await processPlugs(lat,long,distance_meters);
+        addCORS(res);
         res.json(plugs);
         return;
       } catch (error) {
+        console.log(error);
         res.status(500).send("Internal server error");
       }
     }
@@ -58,6 +59,7 @@ app.get("/getAll", async (req: Request, res: Response) => {
     res.json(plugs);
     return;
   } catch (error) {
+    console.log(error);
     res.status(500).send("Internal server error");
   }
 });
@@ -99,19 +101,24 @@ async function processPlugs(lat:number|null,lon:number|null,distance_meters:numb
           street:plugRaw.pmetadata.address,
           best_cost:false,
           best_rating:false,
-          best_time:false
+          best_time:false,
+          count:0
         }
       );
       //se rating è -1 vuol dire che non è riuscito a fetcharlo
     });
     await Promise.all(promises);
+    collapsePlugs(plugs);
     assignBestCost(plugs);
     assignBestRating(plugs);
     assignBestTime(plugs);
-    plugs = plugs.slice(0, 30);
+    if(lat && lon && distance_meters){
+      plugs = plugs.slice(0, 30);
+    }
     return plugs;
   }
   catch(error){
+    console.log(error);
     throw new Error("Couldn't process plugs data");
   }
 }

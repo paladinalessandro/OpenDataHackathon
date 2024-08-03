@@ -14,6 +14,7 @@ export interface plug{
     outletType:string,
     rating: number | null,
     cost: number,
+    count:number,
     street:string,
     best_cost:boolean,
     best_time:boolean,

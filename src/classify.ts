@@ -4,12 +4,15 @@ export function assignBestTime(cards:plug[]){
     let max:number = Infinity;
     let index:number = 0;
     let time:number|null;
+    console.log(cards);
     for (let i = 0; i < cards.length; i++) {
-        time = cards[i].roaDistance;
-        if(time){
-            if(max>time){
-                max = time;
-                index=i;
+        if(cards[i] && cards[i].roaDistance){
+            time = cards[i].roaDistance;
+            if(time){
+                if(max>time){
+                    max = time;
+                    index=i;
+                }
             }
         }
     }
@@ -24,9 +27,11 @@ export function assignBestCost(cards:plug[]){
     let max:number = Infinity;
     let index:number = 0;
     for (let i = 0; i < cards.length; i++) {
-        if(max>cards[i].cost){
-            max = cards[i].cost
-            index=i;
+        if(cards[i] && cards[i].cost){
+            if(max>cards[i].cost){
+                max = cards[i].cost
+                index=i;
+            }
         }
     }
     cards[index].best_cost = true;
@@ -41,11 +46,13 @@ export function assignBestRating(cards:plug[]){
     let index:number = 0;
     let rating:number|null;
     for (let i = 0; i < cards.length; i++) {
-        rating = cards[i].rating;
-        if(rating){
-            if(max<rating){
-                max = rating
-                index=i;
+        if(cards[i] && cards[i].rating){
+            rating = cards[i].rating;
+            if(rating){
+                if(max<rating){
+                    max = rating
+                    index=i;
+                }
             }
         }
     }
@@ -54,6 +61,31 @@ export function assignBestRating(cards:plug[]){
     temp = cards[index];
     cards[index]=cards[2];
     cards[2]=temp;
+}
+
+
+//TODO
+export function collapsePlugs(plugs: plug[]): plug[] {
+    // 1. Creare una mappa per contare le occorrenze di ogni street
+    const streetCountMap = new Map<string, number>();
+    plugs.forEach(plug => {
+        const count = streetCountMap.get(plug.street) || 0;
+        streetCountMap.set(plug.street, count + 1);
+    });
+
+    // 2. Creare una mappa per mantenere solo un plug per ogni street
+    const uniquePlugsMap = new Map<string, plug>();
+    plugs.forEach(plug => {
+        const existingPlug = uniquePlugsMap.get(plug.street);
+        if (!existingPlug) {
+            // Se non esiste un plug con la stessa street, aggiungilo e aggiorna il count
+            const count = streetCountMap.get(plug.street) || 0;
+            uniquePlugsMap.set(plug.street, { ...plug, count });
+        }
+    });
+
+    // 3. Convertire la mappa in un array di plug
+    return Array.from(uniquePlugsMap.values());
 }
 
 
