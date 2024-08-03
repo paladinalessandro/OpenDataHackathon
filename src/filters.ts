@@ -9,7 +9,6 @@ export function filterForPlugType(outletType:string[],plugs:plug[]){
     }
     else{
         const filteredPlugs = plugs.filter(plug => outletType.includes(plug.outletType));
-        console.log(filteredPlugs);
         return filteredPlugs;
     }
 }

@@ -15,6 +15,7 @@ export interface plug{
     rating: number | null,
     cost: number,
     count:number,
+    recharge_time_estimate:number|null,
     street_view_image:string|null,
     street:string,
     best_cost:boolean,

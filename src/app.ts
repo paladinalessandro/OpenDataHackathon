@@ -23,15 +23,21 @@ app.get("/destinations", async (req: Request, res: Response) => {
   const query = req.query;
   let time_for_charging_hours:number|null = null;
   let battery_capacity:number|null = null;
+  let percentage_to_charge:number|null = null;
   let outletTypes:string[] = [];
+  let range:number|null = null;
   if(query.latitude && query.longitude){
     //getting query string params
     const lat:number = +query.latitude;
     const long:number = +query.longitude;
-    if(query.time_for_charging_hours && query.battery_capacity){
+    if(query.range){
+      range = +query.range;
+    }
+    if(query.time_for_charging_hours && query.battery_capacity && query.percentage_to_charge){
       time_for_charging_hours = + query.time_for_charging_hours;
       battery_capacity = + query.battery_capacity;
-      if(Number.isNaN(time_for_charging_hours) || Number.isNaN(battery_capacity)){
+      percentage_to_charge = + query.percentage_to_charge;
+      if(Number.isNaN(time_for_charging_hours) && Number.isNaN(battery_capacity) && Number.isNaN(percentage_to_charge)){
         res.status(400).send("Bad request, number not formatted");
         return;
       }
@@ -47,7 +53,7 @@ app.get("/destinations", async (req: Request, res: Response) => {
     //params are well formatted
     if(!Number.isNaN(lat) && !Number.isNaN(long) ){
       try {
-        const plugs:plug[] = await processPlugs(lat,long,time_for_charging_hours,battery_capacity,outletTypes);
+        const plugs:plug[] = await processPlugs(lat,long,range,time_for_charging_hours,battery_capacity,outletTypes,percentage_to_charge);
         addCORS(res);
         res.json(plugs);
         return;
@@ -65,7 +71,7 @@ app.get("/destinations", async (req: Request, res: Response) => {
 
 app.get("/getAll", async (req: Request, res: Response) => {
   try {
-    const plugs:plug[] = await processPlugs(null,null,null,null,null);
+    const plugs:plug[] = await processPlugs(null,null,null,null,null,null,null);
     addCORS(res);
     res.json(plugs);
     return;

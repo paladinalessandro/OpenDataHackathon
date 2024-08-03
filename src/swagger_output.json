@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3052",
+      "url": "http://localhost:3000",
       "description": ""
     }
   ],
@@ -31,6 +31,13 @@
             }
           },
           {
+            "name": "range",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "time_for_charging_hours",
             "in": "query",
             "schema": {
@@ -39,6 +46,13 @@
           },
           {
             "name": "battery_capacity",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "percentage_to_charge",
             "in": "query",
             "schema": {
               "type": "string"

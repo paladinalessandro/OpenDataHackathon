@@ -10,13 +10,13 @@ function getRandomValue(min: number, max: number): number {
     return Math.random() * (max - min) + min;
   }
   
-export async function processPlugs(lat:number|null,lon:number|null,time_for_charging_hours:number|null,battery_capacity:number|null,outletTypes:string[]|null):Promise<plug[]>{
+export async function processPlugs(lat:number|null,lon:number|null,range:number|null,time_for_charging_hours:number|null,battery_capacity:number|null,outletTypes:string[]|null,percentage_to_charge:number|null):Promise<plug[]>{
     try {
       let time:number | null = null;
       let image:string|null = null;
       let plugsRaw:plugRaw[]= [];
       if(lat && lon){
-        plugsRaw= await getCloseEVPlugs(lat,lon);
+        plugsRaw= await getCloseEVPlugs(lat,lon,range);
       }
       else{
         plugsRaw= await getAllEVPlugs();
@@ -27,17 +27,21 @@ export async function processPlugs(lat:number|null,lon:number|null,time_for_char
           time = await getTravelTime(lat,lon,plugRaw.pcoordinate.y,plugRaw.pcoordinate.x);
           image = await getStreetViewImageUrl(lat,lon);
         }
+        if(plugRaw.smetadata.outlets[0].maxPower>50){
+          plugRaw.smetadata.outlets[0].maxPower = getRandomValue(10, 22)
+        }
         plugs.push(
           {uuid:plugRaw.scode,
             coords:{
               lat:plugRaw.pcoordinate.y,
               lon:plugRaw.pcoordinate.x
             },
+            recharge_time_estimate: null,
             roaDistance: time,
             outletType: plugRaw.smetadata.outlets[0].outletTypeCode,
             powerWatt: plugRaw.smetadata.outlets[0].maxPower,
             rating: await getRating(plugRaw.pcoordinate.y,plugRaw.pcoordinate.x),
-            cost: getRandomValue(0.65, 0.90),
+            cost: getRandomValue(0.022, 0.037)*plugRaw.smetadata.outlets[0].maxPower,
             street:plugRaw.pmetadata.address,
             best_cost:false,
             best_rating:false,
@@ -51,8 +55,11 @@ export async function processPlugs(lat:number|null,lon:number|null,time_for_char
       //does not work
       //collapsePlugs(plugs);
       if(lat && lon){
-        if(time_for_charging_hours && battery_capacity ){
-          plugs = plugs.filter(value => (battery_capacity / value.powerWatt) < time_for_charging_hours);
+        if(time_for_charging_hours && battery_capacity && percentage_to_charge){
+          plugs = plugs.filter(value => ((battery_capacity*percentage_to_charge*0.01) / value.powerWatt) < time_for_charging_hours);
+          plugs.map((plug)=>{
+            plug.recharge_time_estimate = (battery_capacity*percentage_to_charge*0.01) / plug.powerWatt;
+          })
         }
         if(outletTypes){
           plugs = filterForPlugType(outletTypes,plugs);
@@ -74,9 +81,13 @@ export async function processPlugs(lat:number|null,lon:number|null,time_for_char
 }
 
 function getScore(plug:plug){
-if(plug.roaDistance){
-    return plug.roaDistance;
-}
-return Infinity;
+  
+  const roadDistanceWeight = 0.7;
+  const costWeight = 0.3;
+
+  const roadDistance = plug.roaDistance ?? Infinity;
+  const cost = plug.cost ?? Infinity;
+
+  return (roadDistanceWeight * roadDistance) + (costWeight * cost);
 }
   

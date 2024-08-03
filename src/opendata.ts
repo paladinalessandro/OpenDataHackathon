@@ -3,11 +3,19 @@ import { plugRaw } from "./types";
 //latitude =  y
 //longitude = x
 
-export async function getCloseEVPlugs(latitude:number,longitude:number){
+export async function getCloseEVPlugs(latitude:number,longitude:number,range:number|null){
     try {
         //4326 is the code for the formatting of the coordinates
         //usage: longitude - latitude
-        const response = await fetch("https://mobility.api.opendatahub.com/v2/flat/EChargingPlug/?where=sactive.eq.true&limit=400&where=scoordinate.dlt.("+15000+","+longitude+","+latitude+",4326)");
+        //range is in km 
+        if(!range){
+            range = 10000;
+        }
+        else{
+            range=range*1000;
+        }
+        //default is 10km
+        const response = await fetch("https://mobility.api.opendatahub.com/v2/flat/EChargingPlug/?where=sactive.eq.true&limit=400&where=scoordinate.dlt.("+range+","+longitude+","+latitude+",4326)");
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
