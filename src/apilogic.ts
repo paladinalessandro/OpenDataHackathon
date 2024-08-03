@@ -2,9 +2,14 @@ import { getAllEVPlugs, getCloseEVPlugs } from "./opendata";
 import { plug, plugRaw } from "./types";
 import { getRating } from "./maps_api/reviews";
 import { getTravelTime } from "./maps_api/directions";
-import { assignBestCost, assignBestRating, assignBestTime, collapsePlugs } from "./classify";
+import { assignBestCost, assignBestRating, assignBestTime } from "./classify";
 import { getStreetViewImageUrl } from "./maps_api/streetView";
 import { filterForPlugType } from "./filters";
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = 'https://tkzqhmeownsmxalsizmq.supabase.co'
+const supabaseKey = process.env.SUPABASE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRrenFobWVvd25zbXhhbHNpem1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjI2Nzc4MzEsImV4cCI6MjAzODI1MzgzMX0.xBCr-r_K-9GtrloxEscjIZbc5lgEaH8nmOwqthZbnbg"
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 function getRandomValue(min: number, max: number): number {
     return Math.random() * (max - min) + min;
@@ -22,12 +27,60 @@ export async function processPlugs(lat:number|null,lon:number|null,range:number|
         plugsRaw= await getAllEVPlugs();
       }
       let plugs:plug[]=[];
+      try {
+        let { data, error } = await supabase.from('stations').select('*');
+        if(data){
+          data.forEach((dato:any) => {
+            if(dato.user_uuid && 
+              dato.lat && dato.lon &&
+              dato.street && 
+              dato.outletType &&
+              dato.powerWatt &&
+              dato.cost){
+
+                plugsRaw.push({scode:dato.user_uuid,
+                  pcoordinate:{
+                    y:dato.lat,
+                    x:dato.lon,
+                    srid:4326,
+                  },
+                  pmetadata:{city:"",state:"",capacity:1,provider:"",accessInfo:"",accessType:"",reservable:true,paymentInfo:"",address:dato.street},
+                  "smetadata": {"outlets": [{"id": 1, "maxPower": dato.powerWatt, "maxCurrent": 1, "minCurrent": 1, "outletTypeCode": dato.outletType}]},
+                  "pactive": true,
+                  "pavailable": true,
+                  "pcode": "",
+                  "pname": "string",
+                  "porigin": "string",
+                  "ptype": "string",
+                  "sactive": true,
+                  "savailable": true,
+                  "scoordinate": {
+                    "x": 1,
+                    "y": 1,
+                    "srid": 1
+                  },
+                  "sname": "string",
+                  "sorigin": "string",
+                  "stype": "string"
+                })
+              }
+          })
+              
+        }
+        else{
+          console.log(error);
+          throw error;
+        }
+      } catch (error) {
+        console.log(error);
+        throw new Error("Supabase fetch failed");
+      }
       const promises = plugsRaw.map( async (plugRaw) => {
         if(lat && lon){
           time = await getTravelTime(lat,lon,plugRaw.pcoordinate.y,plugRaw.pcoordinate.x);
-          image = await getStreetViewImageUrl(lat,lon);
+          image = await getStreetViewImageUrl(plugRaw.pcoordinate.y,plugRaw.pcoordinate.x);
         }
-        if(plugRaw.smetadata.outlets[0].maxPower>50){
+        if(plugRaw.smetadata.outlets[0].maxPower>500){
           plugRaw.smetadata.outlets[0].maxPower = getRandomValue(10, 22)
         }
         plugs.push(
@@ -72,7 +125,6 @@ export async function processPlugs(lat:number|null,lon:number|null,range:number|
           plugs[0].best_overall =  true;
         }
         assignBestCost(plugs);
-        assignBestRating(plugs);
         assignBestTime(plugs);
         plugs = plugs.slice(0, 30);
       }

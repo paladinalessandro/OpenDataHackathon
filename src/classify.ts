@@ -75,30 +75,6 @@ export function assignBestRating(cards:plug[]){
     }
 }
 
-//TODO
-export function collapsePlugs(plugs: plug[]): plug[] {
-    // 1. Creare una mappa per contare le occorrenze di ogni street
-    const streetCountMap = new Map<string, number>();
-    plugs.forEach(plug => {
-        const count = streetCountMap.get(plug.street) || 0;
-        streetCountMap.set(plug.street, count + 1);
-    });
-
-    // 2. Creare una mappa per mantenere solo un plug per ogni street
-    const uniquePlugsMap = new Map<string, plug>();
-    plugs.forEach(plug => {
-        const existingPlug = uniquePlugsMap.get(plug.street);
-        if (!existingPlug) {
-            // Se non esiste un plug con la stessa street, aggiungilo e aggiorna il count
-            const count = streetCountMap.get(plug.street) || 0;
-            uniquePlugsMap.set(plug.street, { ...plug, count });
-        }
-    });
-
-    // 3. Convertire la mappa in un array di plug
-    return Array.from(uniquePlugsMap.values());
-}
-
 
 //USED TO SORT WHILE CONSIDERING FACTORS
 /*

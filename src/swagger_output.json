@@ -14,61 +14,123 @@
   "paths": {
     "/destinations": {
       "get": {
-        "description": "",
+        "description": "Retrieve suitable charging stations based on provided parameters.",
         "parameters": [
           {
             "name": "latitude",
             "in": "query",
             "schema": {
               "type": "string"
-            }
+            },
+            "required": true,
+            "example": "46.478"
           },
           {
             "name": "longitude",
             "in": "query",
             "schema": {
               "type": "string"
-            }
+            },
+            "required": true,
+            "example": "11.332"
           },
           {
             "name": "range",
             "in": "query",
             "schema": {
               "type": "string"
-            }
+            },
+            "required": false,
+            "example": "50"
           },
           {
             "name": "time_for_charging_hours",
             "in": "query",
             "schema": {
               "type": "string"
-            }
+            },
+            "required": false,
+            "example": "3.5"
           },
           {
             "name": "battery_capacity",
             "in": "query",
             "schema": {
               "type": "string"
-            }
+            },
+            "required": false,
+            "example": "70"
           },
           {
             "name": "percentage_to_charge",
             "in": "query",
             "schema": {
               "type": "string"
-            }
+            },
+            "required": false,
+            "example": "39"
           },
           {
             "name": "outlet_types",
             "in": "query",
             "schema": {
               "type": "string"
-            }
+            },
+            "required": false,
+            "example": "Type2Mennekes"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": [
+                    {
+                      "uuid": "ASM_00000149-1",
+                      "coords": {
+                        "lat": 46.41402,
+                        "lon": 11.248065
+                      },
+                      "recharge_time_estimate": 0.546,
+                      "cost_estimate": 42.6343440220228,
+                      "roaDistance": 19,
+                      "outletType": "CCS",
+                      "powerWatt": 50,
+                      "rating": null,
+                      "cost": 1.56169758322428,
+                      "street": "Wiesenweg - Via dei Prati 3",
+                      "best_cost": false,
+                      "best_rating": false,
+                      "best_time_recharging": true,
+                      "count": 0,
+                      "street_view_image": "https://maps.googleapis.com/maps/api/streetview?size=600x300&location=46.47859069999999,11.3325921&key=AIzaSyCszTXCRzVkOftnnG4WJGJoKihWEK56_k4",
+                      "best_overall": false
+                    },
+                    {
+                      "uuid": "ASM_00000304-2",
+                      "coords": {
+                        "lat": 46.473118,
+                        "lon": 11.326131
+                      },
+                      "recharge_time_estimate": 2.35083252625373,
+                      "cost_estimate": 8.18282746228663,
+                      "roaDistance": 3,
+                      "outletType": "CHAdeMO",
+                      "powerWatt": 11.6129072127078,
+                      "rating": "5.0",
+                      "cost": 0.299737269680829,
+                      "street": "Via Marco Polo Straße",
+                      "best_cost": true,
+                      "best_rating": true,
+                      "best_time_recharging": false,
+                      "count": 0,
+                      "street_view_image": "https://maps.googleapis.com/maps/api/streetview?size=600x300&location=46.47859069999999,11.3325921&key=AIzaSyCszTXCRzVkOftnnG4WJGJoKihWEK56_k4",
+                      "best_overall": true
+                    }
+                  ]
+              }
+            }
           },
           "400": {
             "description": "Bad Request"
@@ -84,10 +146,58 @@
     },
     "/getAll": {
       "get": {
-        "description": "",
+        "description": "Retrieve all charging stations.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": [
+                    {
+                      "uuid": "ASM_00000141-1",
+                      "coords": {
+                        "lat": 46.30949,
+                        "lon": 11.603544
+                      },
+                      "recharge_time_estimate": null,
+                      "cost_estimate": null,
+                      "roaDistance": null,
+                      "outletType": "Type2Mennekes",
+                      "powerWatt": 22.125,
+                      "rating": null,
+                      "cost": 0.568591895589069,
+                      "street": "Via Marconi",
+                      "best_cost": false,
+                      "best_rating": false,
+                      "best_time_recharging": false,
+                      "count": 0,
+                      "street_view_image": null,
+                      "best_overall": false
+                    },
+                    {
+                      "uuid": "A19_00000001-1",
+                      "coords": {
+                        "lat": 45.99427,
+                        "lon": 11.218634
+                      },
+                      "recharge_time_estimate": null,
+                      "cost_estimate": null,
+                      "roaDistance": null,
+                      "outletType": "Type2Mennekes",
+                      "powerWatt": 22.125,
+                      "rating": null,
+                      "cost": 0.621909158149957,
+                      "street": "Via Dante Alighieri 15",
+                      "best_cost": false,
+                      "best_rating": false,
+                      "best_time_recharging": false,
+                      "count": 0,
+                      "street_view_image": null,
+                      "best_overall": false
+                    }
+                  ]
+              }
+            }
           },
           "500": {
             "description": "Internal Server Error"
