@@ -46,8 +46,7 @@ THIS REPO CONTAINS THE BACKEND APIS
     npm run build
     ```
 3. **When launched, navigate to :**
-    ```Open your browser and go to http://HOST/ and take a look at the docs
-    ```
+    Open your browser and go to http://HOST/ and take a look at the docs
 
 
 ## Scripts
