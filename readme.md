@@ -4,6 +4,7 @@
 
 ## Overview
 EV Charging Station Finder is a web application designed to help electric vehicle owners find the best charging station near their current location. Utilizing real-time data and an intuitive map interface, this app ensures you never run out of charge when you need it most.
+THIS REPO CONTAINS THE BACKEND APIS
 
 ## Features
 - **Real-time Charging Station Data:** Get all available open data ev charging station currently active at url/getAll
@@ -14,8 +15,8 @@ EV Charging Station Finder is a web application designed to help electric vehicl
 
 1. **Clone the repository:**
     ```sh
-    git clone https://github.com/yourusername/ev-charging-station-finder.git
-    cd ev-charging-station-finder
+    git clone https://github.com/paladinalessandro/OpenDataHackathon.git
+    cd OpenDataHackathon
     ```
 
 2. **Install dependencies:**
